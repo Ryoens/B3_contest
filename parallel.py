@@ -307,10 +307,10 @@ def motor_play():
             print("x={0}, y={1}, w={2}, h={3}, WW={4}" .format(x, y, w, h, WW))
             if w > int(WW * 0.7):
                 print("next car")
-                r3pi.right_motor(right)
-                cap_sleep(15)
                 r3pi.stop()
-                cv2.destroyAllWindows()
+                cap_sleep(3)
+                r3pi.right_motor(right)
+                r3pi.stop()
                 #red_line = True
                 
 
