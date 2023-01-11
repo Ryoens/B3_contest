@@ -18,7 +18,7 @@ while True:
         if cv2.waitKey(1) == ord('a'):
             browser = webdriver.Chrome(executable_path="/usr/lib/chromium-browser/chromedriver")
             browser.get(data)
-            break
+            breakope
     cv2.imshow("QRCODEscanner", output_img)
     
     if cv2.waitKey(1) == ord('q'):

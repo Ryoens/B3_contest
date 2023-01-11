@@ -169,18 +169,26 @@ while(1):
     frame_sub = frame0[WY:WY+WH+1, WX:WX+WW-1]
     frame_rec = frame0[XY:XY+XH+1, XX:XX+XW-1]
 
-    # Convert BGR to HSV
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    #gray1 = cv2.cvtColor(frame_sub, cv2.COLOR_BGR2GRAY)
+    #gray2 = cv2.cvtColor(frame_rec, cv2.COLOR_BGR2GRAY)
+
+    mask = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 41, -15)
+    #mask1 = cv2.adaptiveThreshold(gray1, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 41, -15)
+    #mask2 = cv2.adaptiveThreshold(gray2, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 41, -15)
+
+    # # Convert BGR to HSV
+    # hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     hsv1 = cv2.cvtColor(frame_sub, cv2.COLOR_BGR2HSV)
     hsv2 = cv2.cvtColor(frame_rec, cv2.COLOR_BGR2HSV)
 
-    # Threshold the HSV image to only detect black colors
-    mask = cv2.inRange(hsv, LOWER_WHITE, UPPER_WHITE)
+    # # Threshold the HSV image to only detect black colors
+    # mask = cv2.inRange(hsv, LOWER_WHITE, UPPER_WHITE)
     mask1 = cv2.inRange(hsv1, LOWER_RED, UPPER_RED)
     mask2 = cv2.inRange(hsv2, LOWER_RED, UPPER_RED)
 
-    # Bitwise-AND mask and original image
-    res = cv2.bitwise_and(frame, frame, mask = mask)
+    # # Bitwise-AND mask and original image
+    # res = cv2.bitwise_and(frame, frame, mask = mask)
     res1 = cv2.bitwise_and(frame_sub, frame_sub, mask = mask1)
     res2 = cv2.bitwise_and(frame_rec, frame_rec, mask = mask2)
 
@@ -270,7 +278,7 @@ while(1):
         r3pi.right_motor(right)
         cap_sleep(30)
         r3pi.forward(speed)
-        cap_sleep(30)
+        cap_sleep(40)
         r3pi.stop()
         cap_sleep(3)
         r3pi.right_motor(right)
