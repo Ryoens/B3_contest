@@ -172,6 +172,7 @@ def motor_play():
     global f
     global time1
     line = True
+    roll = False
 
     while(1):
         lock.acquire()
@@ -277,11 +278,11 @@ def motor_play():
         else:
             print('len(contours) < 1')
 
-        # time.sleepで実行済み
+        # time.sleepで実行済み # 時計周り　→　反時計回り*2 -> 時計回り
         if len(contours2) >= 1:
             print("detection")
             r3pi.stop()
-            cap_sleep(15)
+            cap_sleep(3)
             r3pi.left_motor(left)
             cap_sleep(30)
             r3pi.forward(speed)
@@ -290,7 +291,7 @@ def motor_play():
             cap_sleep(3)
             print("half")
             r3pi.right_motor(right)
-            cap_sleep(20)
+            cap_sleep(30)
             r3pi.forward(speed)
             cap_sleep(40)
             r3pi.stop()
@@ -301,27 +302,37 @@ def motor_play():
             # r3pi.right_motor(right)
             # cap_sleep(30)
             r3pi.left_motor(left)
-            cap_sleep(15)
+            cap_sleep(20)
             #r3pi.stop()
 
         for cnt in contours1:
             x, y, w, h, = cv2.boundingRect(cnt)
             print("x={0}, y={1}, w={2}, h={3}, WW={4}" .format(x, y, w, h, WW))
-            if w > int(WW * 0.6):
+            if w > int(WW * 0.7):
                 print("next car")
-                r3pi.stop()
-                cap_sleep(3)
-                # r3pi.right_motor(right)
+            
+                # r3pi.right_motor(0.3)
+                # print("centre")
+                # cap_sleep(30)
                 # r3pi.stop()
-                line = False
-                print(line)
+                roll = True
                 break
+
+        if roll:
+            print("roll")
+            r3pi.stop()
+            time.sleep(0.5)
+            r3pi.left(0.3)
+            time.sleep(1)
+            r3pi.stop()
+            line = False
+            print(line)
+
 
         if not line:
             print("kill")
+            
             # os.system("pkill -9 -n python3")
-            r3pi.right_motor(right)
-            r3pi.stop()
             raise KeyboardInterrupt
 
                 
@@ -388,6 +399,7 @@ try:
     thread1.join()
     # thread2.join()
 except KeyboardInterrupt:
+    r3pi.left_motor(speed)
     thread1.kill()
     cv2.destroyAllWindows()
     r3pi.stop()
