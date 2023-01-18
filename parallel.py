@@ -14,6 +14,7 @@ import sys
 import RPi.GPIO as GPIO
 import threading
 import multiprocessing
+import os
 
 ################################
 
@@ -170,6 +171,7 @@ def motor_play():
     global intg
     global f
     global time1
+    line = True
 
     while(1):
         lock.acquire()
@@ -226,7 +228,8 @@ def motor_play():
         contours2, hierarchy2 = cv2.findContours(mask2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cv2.drawContours(frame_rec, contours2, -1, RED, 3)
 
-        if len(contours) >= 1:
+        print(line)
+        if len(contours) >= 1 and line:
             # Black object(s) detected
             # focus on the first one
             cx = getMomentX(contours[0]) / LW # normalization
@@ -287,13 +290,13 @@ def motor_play():
             cap_sleep(3)
             print("half")
             r3pi.right_motor(right)
-            cap_sleep(30)
+            cap_sleep(20)
             r3pi.forward(speed)
             cap_sleep(40)
             r3pi.stop()
             cap_sleep(3)
             r3pi.right_motor(right)
-            cap_sleep(15)
+            cap_sleep(20)
             print("go")
             # r3pi.right_motor(right)
             # cap_sleep(30)
@@ -301,17 +304,26 @@ def motor_play():
             cap_sleep(15)
             #r3pi.stop()
 
-        #red_line = False
         for cnt in contours1:
             x, y, w, h, = cv2.boundingRect(cnt)
             print("x={0}, y={1}, w={2}, h={3}, WW={4}" .format(x, y, w, h, WW))
-            if w > int(WW * 0.7):
+            if w > int(WW * 0.6):
                 print("next car")
                 r3pi.stop()
                 cap_sleep(3)
-                r3pi.right_motor(right)
-                r3pi.stop()
-                #red_line = True
+                # r3pi.right_motor(right)
+                # r3pi.stop()
+                line = False
+                print(line)
+                break
+
+        if not line:
+            print("kill")
+            # os.system("pkill -9 -n python3")
+            r3pi.right_motor(right)
+            r3pi.stop()
+            raise KeyboardInterrupt
+
                 
 
         # for c in contours2:
@@ -344,6 +356,7 @@ def motor_play():
         # Press ESC key to exit
         k = cv2.waitKey(1) & 0xFF
         if k == 27:
+            print("ctrl c")
             break
 
         f += 1
@@ -361,19 +374,21 @@ def music():
     
     while True:
         lock.acquire()
-        r3pi.play("! V12 T180 crdrerfrarbr")
+        r3pi.play("! V12 T180 crdrerfrgrarbr>cr")
         lock.release()
         time.sleep(8)
 
 try:
     thread1 = multiprocessing.Process(target=music)
-    thread2 = threading.Thread(target=motor_play)
+    # thread2 = threading.Thread(target=motor_play)
     thread1.start()
     time.sleep(0.5)
-    thread2.start()
+    # thread2.start()
+    motor_play()
     thread1.join()
-    thread2.join()
+    # thread2.join()
 except KeyboardInterrupt:
+    thread1.kill()
     cv2.destroyAllWindows()
     r3pi.stop()
 
