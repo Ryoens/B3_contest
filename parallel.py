@@ -286,7 +286,7 @@ def motor_play():
             r3pi.left_motor(left)
             cap_sleep(30)
             r3pi.forward(speed)
-            cap_sleep(15)
+            cap_sleep(20)
             r3pi.stop()
             cap_sleep(3)
             print("half")
@@ -297,7 +297,7 @@ def motor_play():
             r3pi.stop()
             cap_sleep(3)
             r3pi.right_motor(right)
-            cap_sleep(20)
+            cap_sleep(15)
             print("go")
             # r3pi.right_motor(right)
             # cap_sleep(30)
@@ -308,7 +308,7 @@ def motor_play():
         for cnt in contours1:
             x, y, w, h, = cv2.boundingRect(cnt)
             print("x={0}, y={1}, w={2}, h={3}, WW={4}" .format(x, y, w, h, WW))
-            if w > int(WW * 0.7):
+            if w > int(WW * 0.8):
                 print("next car")
             
                 # r3pi.right_motor(0.3)
@@ -321,9 +321,9 @@ def motor_play():
         if roll:
             print("roll")
             r3pi.stop()
-            time.sleep(0.5)
+            time.sleep(2)
             r3pi.left(0.3)
-            time.sleep(1)
+            time.sleep(1.2)
             r3pi.stop()
             line = False
             print(line)
