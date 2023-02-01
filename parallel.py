@@ -284,7 +284,7 @@ def motor_play():
             r3pi.stop()
             cap_sleep(3)
             r3pi.left_motor(left)
-            cap_sleep(30)
+            cap_sleep(25)
             r3pi.forward(speed)
             cap_sleep(20)
             r3pi.stop()
