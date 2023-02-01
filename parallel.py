@@ -279,7 +279,7 @@ def motor_play():
             print('len(contours) < 1')
 
         # time.sleepで実行済み # 時計周り　→　反時計回り*2 -> 時計回り
-        if len(contours2) >= 1:
+        if len(contours2) >= 1: # 障害物を認識したとき
             print("detection")
             r3pi.stop()
             cap_sleep(3)
@@ -308,7 +308,7 @@ def motor_play():
         for cnt in contours1:
             x, y, w, h, = cv2.boundingRect(cnt)
             print("x={0}, y={1}, w={2}, h={3}, WW={4}" .format(x, y, w, h, WW))
-            if w > int(WW * 0.8):
+            if w > int(WW * 0.8): # 上の検出窓
                 print("next car")
             
                 # r3pi.right_motor(0.3)
@@ -322,14 +322,14 @@ def motor_play():
             print("roll")
             r3pi.stop()
             time.sleep(2)
-            r3pi.left(0.3)
+            r3pi.left(0.3) # 一回転
             time.sleep(1.2)
             r3pi.stop()
             line = False
             print(line)
 
 
-        if not line:
+        if not line: # バトンパス完了後
             print("kill")
             
             # os.system("pkill -9 -n python3")
@@ -391,13 +391,10 @@ def music():
 
 try:
     thread1 = multiprocessing.Process(target=music)
-    # thread2 = threading.Thread(target=motor_play)
     thread1.start()
     time.sleep(0.5)
-    # thread2.start()
     motor_play()
     thread1.join()
-    # thread2.join()
 except KeyboardInterrupt:
     r3pi.left_motor(speed)
     thread1.kill()
