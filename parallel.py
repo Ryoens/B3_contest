@@ -171,8 +171,8 @@ def motor_play():
     global intg
     global f
     global time1
-    line = True
-    roll = False
+    line = True # 走行フラグ
+    roll = False # 走行の終了フラグ
 
     while(1):
         lock.acquire()
@@ -230,7 +230,7 @@ def motor_play():
         cv2.drawContours(frame_rec, contours2, -1, RED, 3)
 
         print(line)
-        if len(contours) >= 1 and line:
+        if len(contours) >= 1 and line: # 走行フラグ(line)がTrueのとき
             # Black object(s) detected
             # focus on the first one
             cx = getMomentX(contours[0]) / LW # normalization
@@ -335,29 +335,6 @@ def motor_play():
             # os.system("pkill -9 -n python3")
             raise KeyboardInterrupt
 
-                
-
-        # for c in contours2:
-        #     xx, xy, xw, xh, = cv2.boundingRect(c)
-        #     print("xx={0}, xy={1}, xw={2}, xh={3}, XW={4}" .format(xx, xy, xw, xh, XW))
-        #     if xw > int(XW * 0.5):
-        #         print("detection")
-        #         r3pi.stop()
-
-        # if red_line:
-        #     r3pi.stop()
-        #     cap_sleep(15)
-        #     r3pi.right_motor(right)
-        #     cap_sleep(15)
-        #     r3pi.stop()
-        #     red_line = False
-
-        # if stop_line == 1:
-        #     r3pi.left_motor(left)
-        #     # r3pi.stop()
-        #     # cap_sleep(30)
-        # else stop_line == 2:
-        #     r3pi.stop()    
         if GUI:
             cv2.rectangle(frame,(0,0),(LW-1,LH-1),(0,255,0),1)
             cv2.rectangle(frame_sub, (0,0),(WW-1,WH-1),(0,255,0), 1)
